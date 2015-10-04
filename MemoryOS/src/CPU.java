@@ -85,11 +85,11 @@ public class CPU {
     }
     
     protected static void printToScreen(int value)  {
-    	System.out.print("print" + value);    
+    	System.out.println("print" + value);    
     }
     
     protected static void printCToScreen(int value)  {
-    	System.out.print("pchar" + value);    
+    	System.out.println("pchar" + value);    
     }
     
     protected static void printSToScreen(String value)  {

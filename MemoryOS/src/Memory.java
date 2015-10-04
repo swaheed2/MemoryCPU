@@ -143,6 +143,8 @@ public class Memory {
 			if(line.equals("")){
 				continue;
 			}
+			line = line.replaceAll("[^0-9]", "");
+			//System.out.println(line);
 		    write(i, Integer.parseInt(line)); 
 		    i++;
 		}
