@@ -40,7 +40,7 @@ public class Memory {
 	public void run(String[] args) throws FileNotFoundException {
 
 		if (args.length > 0) {
-			iniMemory(args[0]);
+			iniMemory(args[0]); 
 		}
 		try{ 
 			
@@ -51,26 +51,52 @@ public class Memory {
 			OutputStream os = proc.getOutputStream();
 			PrintWriter pw = new PrintWriter(proc.getOutputStream(), true);
 			BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));	
+			 
 			
-			while(i != instructionEnd){
-				pw.printf(String.valueOf(read(i))+"\n");
-				pw.flush();  
-				i++;
-			}
-	 
-			String line = "";
-			
-			
-			while ((line = br.readLine() ) != null) {
-				 if(line.contains("read")){
+//			while(i != instructionEnd){
+//				System.out.println("sending instruction"); 
+//				pw.println(String.valueOf(read(i)));
+//				pw.flush();  
+//				i++;
+//			}
+
+			String line; 
+			while ( !(line = br.readLine() ).equals("end")) { 
+				
+				 if(line.contains("send") && i <= instructionEnd) {
+					//System.out.println("sending instruction: " + String.valueOf(read(i)));
+					pw.println(String.valueOf(read(i)));
+					pw.flush();
+					i++;
+				 }
+				 else if(line.contains("read")){ 
+					//pw.println(String.valueOf(read(Integer.parseInt(line.substring(4))))); 
 					sendToCPU(Integer.parseInt(line.substring(4)), pw);  
 				 }
-				 else if(line.contains("write"))
-				 {
+				 else if(line.contains("write")){
+					 
+					 int indexOfAdd = line.indexOf("address");
+					 int value = Integer.parseInt(line.substring(5,indexOfAdd));
+					 int address = Integer.parseInt(line.substring(indexOfAdd+7));
+					 write(address,value);
 					 
 				 }
-//				 else
-//					 System.out.println(line);
+				 else if(line.contains("print")){
+					 print(line.substring(5));
+				 }
+				 else if(line.contains("pstring")){
+					 print(line.substring(7));
+				 } 
+				 else if(line.contains("pchar")){
+					 System.out.println((char)Integer.parseInt(line.substring(5))); 
+				 }
+				 else if(line.contains("end")){
+					 break;
+				 }
+				 else
+					 System.out.println(line);
+				 
+				 
 			}
 	
 			proc.waitFor();
@@ -87,10 +113,14 @@ public class Memory {
         
     
     }
-	public void sendToCPU(int index, PrintWriter pw){ 
-		System.out.println("SendToCPU: " + String.valueOf(read(index)));
-		pw.println(String.valueOf(read(index))+"\n");
+	public void print(String value){
+		System.out.println(value);
 	}
+	public void sendToCPU(int index, PrintWriter pw){   
+		pw.println(String.valueOf(read(index)));
+		pw.flush();
+	}
+	
     protected void iniMemory(String path) throws FileNotFoundException {
         File program = new File(path);
         if (!program.exists()) {
