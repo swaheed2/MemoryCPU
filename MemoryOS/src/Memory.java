@@ -65,9 +65,12 @@ public class Memory {
 				
 				 if(line.contains("send") && i <= instructionEnd) {
 					//System.out.println("sending instruction: " + String.valueOf(read(i)));
-					pw.println(String.valueOf(read(i)));
-					pw.flush();
-					i++;
+					 String[] part = line.split("(?<=\\D)(?=\\d)");  
+					int index = Integer.parseInt(part[1]); 
+					//System.out.println("index: " + index);
+					//System.out.println("read at 0 : " + read(index));
+					pw.println(read(index));
+					pw.flush(); 
 				 }
 				 else if(line.contains("read")){ 
 					//pw.println(String.valueOf(read(Integer.parseInt(line.substring(4))))); 
